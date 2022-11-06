@@ -1,0 +1,4 @@
+spring:
+  application:
+    name: logback-janino-bug
+enable-file-appender: true

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="enableFileAppender" source="enable-file-appender"/>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <springProfile name="default | local">
+                <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            </springProfile>
+            <providers>
+                <logLevel/>
+                <timestamp/>
+                <pattern/>
+                <message/>
+                <loggerName/>
+                <threadName/>
+                <mdc/>
+                <logstashMarkers/>
+                <arguments/>
+                <stackTrace/>
+                <rootStackTraceElement/>
+            </providers>
+        </encoder>
+    </appender>
+
+<!--    <if condition='true'>-->
+    <if condition='property("enableFileAppender").contains("true")'>
+        <then>
+            <appender name="file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>logfile.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <maxHistory>10</maxHistory>
+                    <fileNamePattern>logfile.log-%d{yyyy-MM-dd}.gz</fileNamePattern>
+                </rollingPolicy>
+                <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <logLevel/>
+                        <timestamp/>
+                        <pattern/>
+                        <message/>
+                        <loggerName/>
+                        <threadName/>
+                        <mdc/>
+                        <logstashMarkers/>
+                        <arguments/>
+                        <stackTrace/>
+                        <rootStackTraceElement/>
+                    </providers>
+                </encoder>
+            </appender>
+        </then>
+    </if>
+
+    <if condition='!property("enableFileAppender").contains("true")'>
+        <then>
+            <root level="INFO">
+                <appender-ref ref="Console"/>
+            </root>
+        </then>
+    </if>
+
+<!--    <if condition='true'>-->
+    <if condition='property("enableFileAppender").contains("true")'>
+        <then>
+            <root level="INFO">
+                <appender-ref ref="Console"/>
+                <appender-ref ref="file_appender"/>
+            </root>
+        </then>
+    </if>
+
+</configuration>
